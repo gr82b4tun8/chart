@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Robinhood-Style Stock Chart</title>
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #chart-container {
+            width: 800px;
+            height: 500px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .chart-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="chart-container">
+        <div class="chart-title">AAPL - 1 Day</div>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        // Create the chart
+        const chart = LightweightCharts.createChart(document.getElementById('chart'), {
+            width: 760, // Adjusted to fit container
+            height: 400, // Adjusted to fit container
+            layout: {
+                backgroundColor: '#ffffff',
+                textColor: '#000',
+            },
+            grid: {
+                vertLines: {
+                    color: 'rgba(0, 0, 0, 0.05)',
+                },
+                horzLines: {
+                    color: 'rgba(0, 0, 0, 0.05)',
+                },
+            },
+            priceScale: {
+                borderColor: 'rgba(0, 0, 0, 0.1)',
+            },
+            timeScale: {
+                borderColor: 'rgba(0, 0, 0, 0.1)',
+                timeVisible: true, // Show time on the x-axis
+            },
+        });
+
+        // Add a line series
+        const lineSeries = chart.addLineSeries({
+            color: '#4CAF50', // Green color similar to Robinhood
+            lineWidth: 2,
+        });
+
+        // Mock data for a single day (replace with real data)
+        const mockData = [
+            { time: '2023-10-01 09:30', value: 145.0 },
+            { time: '2023-10-01 10:00', value: 146.5 },
+            { time: '2023-10-01 10:30', value: 147.0 },
+            { time: '2023-10-01 11:00', value: 146.0 },
+            { time: '2023-10-01 11:30', value: 147.5 },
+            { time: '2023-10-01 12:00', value: 148.0 },
+            { time: '2023-10-01 12:30', value: 147.0 },
+            { time: '2023-10-01 13:00', value: 148.5 },
+            { time: '2023-10-01 13:30', value: 149.0 },
+            { time: '2023-10-01 14:00', value: 148.0 },
+            { time: '2023-10-01 14:30', value: 149.5 },
+            { time: '2023-10-01 15:00', value: 150.0 },
+            { time: '2023-10-01 15:30', value: 149.0 },
+            { time: '2023-10-01 16:00', value: 150.5 },
+        ];
+
+        // Set the data
+        lineSeries.setData(mockData);
+
+        // Customize the chart to mimic Robinhood's style
+        chart.applyOptions({
+            priceScale: {
+                autoScale: true,
+                borderVisible: false,
+            },
+            timeScale: {
+                borderVisible: false,
+                timeVisible: true,
+                secondsVisible: false,
+            },
+            handleScroll: {
+                mouseWheel: false,
+                pressedMouseMove: false,
+            },
+            handleScale: {
+                mouseWheel: false,
+                pinch: false,
+            },
+        });
+    </script>
+</body>
+</html>
