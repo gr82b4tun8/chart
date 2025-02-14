@@ -21,3 +21,6 @@ const chart = LightweightCharts.createChart(document.getElementById('chart'), {
         timeVisible: true,
     },
 });
+document.addEventListener('DOMContentLoaded', () => {
+    // Your chart initialization and data fetching code here
+});
