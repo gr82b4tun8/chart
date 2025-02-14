@@ -38,10 +38,30 @@
     </div>
 
     <script>
+        // Alpha Vantage API key
+        const API_KEY = '23F0GUPBR85CBU4F'; // Replace with your Alpha Vantage API key
+
+        // Function to fetch stock data from Alpha Vantage
+        async function fetchStockData(symbol) {
+            const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return data;
+        }
+
+        // Function to format Alpha Vantage data for Lightweight Charts
+        function formatData(apiData) {
+            const timeSeries = apiData['Time Series (Daily)'];
+            return Object.keys(timeSeries).map((date) => ({
+                time: date,
+                value: parseFloat(timeSeries[date]['4. close']), // Use closing price
+            }));
+        }
+
         // Create the chart
         const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-            width: 760, // Adjusted to fit container
-            height: 400, // Adjusted to fit container
+            width: 760,
+            height: 400,
             layout: {
                 backgroundColor: '#ffffff',
                 textColor: '#000',
@@ -59,57 +79,26 @@
             },
             timeScale: {
                 borderColor: 'rgba(0, 0, 0, 0.1)',
-                timeVisible: true, // Show time on the x-axis
+                timeVisible: true,
             },
         });
 
         // Add a line series
         const lineSeries = chart.addLineSeries({
-            color: '#4CAF50', // Green color similar to Robinhood
+            color: '#4CAF50',
             lineWidth: 2,
         });
 
-        // Mock data for a single day (replace with real data)
-        const mockData = [
-            { time: '2023-10-01 09:30', value: 145.0 },
-            { time: '2023-10-01 10:00', value: 146.5 },
-            { time: '2023-10-01 10:30', value: 147.0 },
-            { time: '2023-10-01 11:00', value: 146.0 },
-            { time: '2023-10-01 11:30', value: 147.5 },
-            { time: '2023-10-01 12:00', value: 148.0 },
-            { time: '2023-10-01 12:30', value: 147.0 },
-            { time: '2023-10-01 13:00', value: 148.5 },
-            { time: '2023-10-01 13:30', value: 149.0 },
-            { time: '2023-10-01 14:00', value: 148.0 },
-            { time: '2023-10-01 14:30', value: 149.5 },
-            { time: '2023-10-01 15:00', value: 150.0 },
-            { time: '2023-10-01 15:30', value: 149.0 },
-            { time: '2023-10-01 16:00', value: 150.5 },
-        ];
+        // Fetch and display data
+        async function loadChart() {
+            const symbol = 'AAPL'; // Replace with any stock symbol
+            const apiData = await fetchStockData(symbol);
+            const formattedData = formatData(apiData);
+            lineSeries.setData(formattedData);
+        }
 
-        // Set the data
-        lineSeries.setData(mockData);
-
-        // Customize the chart to mimic Robinhood's style
-        chart.applyOptions({
-            priceScale: {
-                autoScale: true,
-                borderVisible: false,
-            },
-            timeScale: {
-                borderVisible: false,
-                timeVisible: true,
-                secondsVisible: false,
-            },
-            handleScroll: {
-                mouseWheel: false,
-                pressedMouseMove: false,
-            },
-            handleScale: {
-                mouseWheel: false,
-                pinch: false,
-            },
-        });
+        // Load the chart when the page loads
+        loadChart();
     </script>
 </body>
 </html>
