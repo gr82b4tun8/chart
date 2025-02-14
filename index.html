@@ -33,7 +33,7 @@
 </head>
 <body>
     <div id="chart-container">
-        <div class="chart-title">AAPL - 1 Day</div>
+        <div class="chart-title">AAPL - Daily Chart</div>
         <div id="chart"></div>
     </div>
 
@@ -52,8 +52,12 @@
         // Function to format Alpha Vantage data for Lightweight Charts
         function formatData(apiData) {
             const timeSeries = apiData['Time Series (Daily)'];
+            if (!timeSeries) {
+                console.error('No time series data found in API response:', apiData);
+                return [];
+            }
             return Object.keys(timeSeries).map((date) => ({
-                time: date,
+                time: date, // Date in 'YYYY-MM-DD' format
                 value: parseFloat(timeSeries[date]['4. close']), // Use closing price
             }));
         }
@@ -92,9 +96,19 @@
         // Fetch and display data
         async function loadChart() {
             const symbol = 'AAPL'; // Replace with any stock symbol
-            const apiData = await fetchStockData(symbol);
-            const formattedData = formatData(apiData);
-            lineSeries.setData(formattedData);
+            try {
+                const apiData = await fetchStockData(symbol);
+                console.log('API Data:', apiData); // Debugging: Log API response
+                const formattedData = formatData(apiData);
+                console.log('Formatted Data:', formattedData); // Debugging: Log formatted data
+                if (formattedData.length > 0) {
+                    lineSeries.setData(formattedData);
+                } else {
+                    console.error('No data to display.');
+                }
+            } catch (error) {
+                console.error('Error fetching or formatting data:', error);
+            }
         }
 
         // Load the chart when the page loads
